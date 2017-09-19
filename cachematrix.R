@@ -1,15 +1,65 @@
-## Put comments here that give an overall description of what your
-## functions do
+## R function to create Matrix inversion to cache the inverse of a matrix and to avoid recomputing.
 
-## Write a short comment describing this function
+## makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse.
 
-makeCacheMatrix <- function(x = matrix()) {
+makeCacheMatrix <- function(mtx = matrix()) {
 
+# Create inverse and initialize to null
+
+    invr <- NULL
+
+# set the matrix . 
+
+    setmtx <- function(mx) {
+            mtx <<- mx
+            invr <<- NULL
+    }
+
+    # Gets the matrix 
+
+    getmtx <- function() mtx
+
+    # set inverse
+
+    setinverse <- function(inverse) invr <<- inverse
+
+    # Get the inverse
+
+    getinverse <- function() invr
+
+    # create list of above functions
+
+    list(setmtx = setmtx, getmtx = getmtx,
+         setinverse = setinverse,
+         getinverse = getinverse)	
 }
 
 
-## Write a short comment describing this function
+## cacheSolve: computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
+## If the inverse has already been calculated (and the matrix has not changed), then the cachesolve should retrieve the inverse from the cache.
 
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+cacheSolve <- function(mtx, ...) {
+
+    invr <- mtx$getinverse()
+
+    # if computed return the inverse
+
+    if(!is.null(invr)) {
+    		
+        message("Return cached matrix")
+
+        return(invr)
+    }
+
+    # If not computed get matrix and find inverse and return it
+
+    data <- mtx$getmtx()
+
+    invr <- solve(data, ...)
+
+    mtx$setinverse(invr)
+     
+     message("Return the inverse")
+
+    invr    
 }
